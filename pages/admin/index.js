@@ -70,7 +70,7 @@ const Admin = ({ children }) => {
    <>
     <Header />
      <div style={{ width: "100%", display: "flex", height: "100vh" }}>
-      
+            
       <div
         style={{
           maxWidth: 256,

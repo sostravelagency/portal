@@ -1,6 +1,7 @@
 import connection from "../../connect";
 
-const apiStudent = async (req, res) => {
+const handler = async (req, res) => {
+  console.log(req.query);
   if (req.method === "GET") {
     try {
       const [rows] = await connection.execute(
@@ -13,10 +14,9 @@ const apiStudent = async (req, res) => {
   } else if (req.method === "POST") {
     return res.status(200).json({ message: "Post method" });
   } else if (req.method === "DELETE") {
-    const { student_id } = JSON.parse(req.body);
     try {
       await connection.execute("DELETE FROM student WHERE student_id = ?", [
-        student_id,
+        req.body.student_id || "",
       ]);
       return res.status(200).json({ delete: true });
     } catch (error) {
@@ -25,4 +25,4 @@ const apiStudent = async (req, res) => {
   }
 };
 
-export default apiStudent;
+export default handler;

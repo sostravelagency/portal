@@ -79,9 +79,12 @@ function StudentData() {
                             }})
                             .then(async value=> {
                                 if(value=== "ok") {
-                                    const res= await fetch('/api/v3/student',{
-                                        method: "delete",
+                                    const res= await fetch(`/api/v3/student/${params.row.id}`,{
+                                        method: "DELETE",
                                         body: JSON.stringify({student_id: params.row.id}),
+                                        headers: {
+                                          "Content-Type": "application/json"
+                                        }
                                     })
                                     const result= await res.json()
                                     if(result?.delete=== true) {

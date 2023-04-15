@@ -21,11 +21,14 @@
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "mdb-react-ui-kit": "^6.0.0",
+    "moment": "^2.29.4",
     "mysql2": "^3.2.0",
     "next": "13.3.0",
     "next-connect": "^0.13.0",
+    "quill-image-uploader": "^1.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-quill": "^2.0.0",
     "styled-components": "^5.3.9",
     "sweetalert": "^2.1.2"
   }
