@@ -21,23 +21,29 @@ function getItem(label, key, icon, children, type) {
 }
 const items = [
   getItem(
-    <Link href="/admin/students">Manage student</Link>,
+    <Link href="/admin/students">Manage students</Link>,
     "1",
     <PieChartOutlined />
   ),
   getItem(
-    <Link href="/admin/teachers">Manage teacher</Link>,
+    <Link href="/admin/teachers">Manage teachers</Link>,
     "2",
     <ContainerOutlined />
   ),
   getItem(
-    <Link href="/admin/courses">Manage course</Link>,
+    <Link href="/admin/courses">Manage courses</Link>,
     "3",
     <ContainerOutlined />
   ),
   getItem(
-    <Link href="/admin/accounts">Manage account</Link>,
+    <Link href="/admin/accounts">Manage accounts</Link>,
     "4",
+    <ContainerOutlined />
+  ),
+  ,
+  getItem(
+    <Link href="/admin/post">Manage posts</Link>,
+    "5",
     <ContainerOutlined />
   ),
 //   getItem(
