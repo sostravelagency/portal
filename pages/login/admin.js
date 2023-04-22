@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MDBBtn,
   MDBContainer,
@@ -14,9 +14,13 @@ from 'mdb-react-ui-kit';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import Header from '@/component/Header';
 import { useRouter } from 'next/router';
+import login from '@/app/api/login';
+import swal from 'sweetalert';
 
 function Login() {
   const router= useRouter()
+  const [account, setAccount]= useState("")
+  const [password, setPassword]= useState("")
 
   return (
     <MDBContainer fluid>
@@ -30,15 +34,33 @@ function Login() {
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="envelope me-3" size='lg'/>
-                <MDBInput label='Your Account' id='form2' type='text'/>
+                <MDBInput value={account} onChange={(e)=> setAccount(e.target.value)} label='Your Account' id='form2' type='text'/>
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="lock me-3" size='lg'/>
-                <MDBInput label='Password' id='form3' type='password'/>
+                <MDBInput value={password} onChange={(e)=> setPassword(e.target.value)} label='Password' id='form3' type='password'/>
               </div>
 
-              <MDBBtn onClick={()=> router.push("/admin")} className='mb-4' size='lg'>Login</MDBBtn>
+              <MDBBtn onClick={async ()=> {
+                const result= await login(account, password)
+                if(result?.exist=== false ) {
+                  swal("Notice", "Account or password is not correct, try again", "error")
+                }
+                else {
+                  swal("Notice", "Login is successfully", "success")
+                  if(result?.role=== 1) {
+                    router.push("/student")
+                  }
+                  else if(result?.role=== 2) {
+                    router.push("/teacher")
+                  }
+                  else if(result?.role=== 3) {
+                    router.push("/admin")
+                  }
+
+                }
+              }} className='mb-4' size='lg'>Login</MDBBtn>
 
             </MDBCol>
 
