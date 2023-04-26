@@ -5,6 +5,8 @@ import axios from "axios";
 import Admin from '..';
 import UpdateCourse from './Component/UpdateCourse';
 import { DeleteOutlined } from '@ant-design/icons';
+import AddCourse from './Component/AddCourse';
+import delete_course from '@/app/api/admin/delete_course';
 const AdminManageCourses= ()=> {
     return (
         <Admin>
@@ -17,6 +19,7 @@ const AdminManageCourses= ()=> {
 
 
 function CourseData() {
+  const [change, setChange]= React.useState(false)
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         {
@@ -41,7 +44,7 @@ function CourseData() {
             renderCell: (params)=> {
                 return (
                     <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: 10}}>
-                        <UpdateCourse {...params.row} />
+                        <UpdateCourse {...params.row} setChange={setChange} />
                         <DeleteOutlined onClick={async ()=> {
                             swal("Notice", "Are you sure want to delete this course", {buttons: {
                                 ok: "Confirm",
@@ -49,11 +52,7 @@ function CourseData() {
                             }})
                             .then(async value=> {
                                 if(value=== "ok") {
-                                    const res= await fetch('/api/v3/course',{
-                                        method: "delete",
-                                        body: JSON.stringify({course_id: params.row.id}),
-                                    })
-                                    const result= await res.json()
+                                    const result= await delete_course(params.row?.id)
                                     if(result?.delete=== true) {
                                         swal("Notice", "Delete course successfully", "success")
                                         .then(()=> setChange(prev=> !prev))
@@ -82,9 +81,13 @@ function CourseData() {
         const result= await res.data
         return setData(result)
         })()
-    }, [])
+    }, [change])
     return (
       <Box sx={{ height: 400, width: '100%' }}>
+        <AddCourse setChange={setChange} />
+        <div></div>
+        <br />
+        <div></div>
         <DataGrid
           rows={data}
           columns={columns}

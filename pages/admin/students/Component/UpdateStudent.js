@@ -12,6 +12,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import axios from "axios";
+import update_student from "@/app/api/admin/update_student";
+import swal from "sweetalert";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -19,6 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function UpdateStudent(props) {
   const [open, setOpen] = React.useState(false);
+  const [studentId, setStudentId]= React.useState(props?.id)
   const [firstName, setFirstName] = React.useState(props?.first_name);
   const [middleName, setMiddleName] = React.useState(props?.middle_name);
   const [lastName, setLastName] = React.useState(props?.last_name);
@@ -104,15 +107,6 @@ export default function UpdateStudent(props) {
             <div></div>
             <br />
             <div></div>
-            <TextField
-              style={{ width: 400, height: 50 }}
-              label={"First name"}
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-            <div></div>
-            <br />
-            <div></div>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Class</InputLabel>
               <Select
@@ -121,7 +115,7 @@ export default function UpdateStudent(props) {
                 value={classId}
                 label="Age"
                 renderValue={()=> {
-                    console.log(classList?.find(item=> parseInt(item?.class_id) === parseInt(classId))?.class_name)
+                    // console.log(classList?.find(item=> parseInt(item?.class_id) === parseInt(classId))?.class_name)
                     return classList?.find(item=> parseInt(item?.class_id) === parseInt(classId))?.class_name
                 }}
               >
@@ -138,7 +132,23 @@ export default function UpdateStudent(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Update</Button>
+          <Button onClick={async ()=> {
+            try {
+              const result= await update_student({firstName, lastName, middleName, phone, dob, class_id: classId, student_id: studentId})
+              if(result?.update=== true) {
+                swal("Notice", "Updated student", "success")
+                .then(()=> props?.setChange(prev=> !prev))
+              }
+              else {
+                  swal("Notice", "Error unknown", "error")
+                }
+              handleClose()
+            }
+            catch(error) {
+              swal("Notice", "Error server", "error")
+
+            }
+          }}>Update</Button>
         </DialogActions>
       </Dialog>
     </div>

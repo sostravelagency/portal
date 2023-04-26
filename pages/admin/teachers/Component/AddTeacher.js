@@ -3,10 +3,10 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
+// import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import get_list_class from "@/app/api/get_list_class";
+// import get_list_class from "@/app/api/get_list_class";
 import { TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -15,12 +15,13 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import add_student from "@/app/api/admin/add_student";
 import swal from "sweetalert";
+import add_teacher from "@/app/api/admin/add_teacher";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AddStudent(props) {
+export default function AddTeacher(props) {
   const [open, setOpen] = React.useState(false);
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -29,14 +30,6 @@ export default function AddStudent(props) {
   const [phone, setPhone]= React.useState("")
   const [account, setAccount]= React.useState("")
   const [password, setPassword]= React.useState("")
-  const [classChoose, setClassChoose]= React.useState()
-  const [listClass, setListClass] = React.useState([]);
-  React.useEffect(() => {
-    (async () => {
-      const result = await get_list_class();
-      return setListClass(result);
-    })();
-  }, []);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -48,7 +41,7 @@ export default function AddStudent(props) {
   return (
     <div>
       <Button color={"primary"} variant="contained" onClick={handleClickOpen}>
-        Add student
+        Add teacher
       </Button>
       <Dialog
         open={open}
@@ -57,7 +50,7 @@ export default function AddStudent(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Add student"}</DialogTitle>
+        <DialogTitle>{"Add teacher"}</DialogTitle>
         <DialogContent>
           <TextField
             style={{ margin: "12px 0", width: 535 }}
@@ -102,28 +95,14 @@ export default function AddStudent(props) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Class</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={classChoose || ""}
-              label="Class"
-              onChange={(e)=> setClassChoose(e.target.value)}
-            >
-              {
-                listClass?.map((item, key)=> <MenuItem key={key} value={item?.class_id}>{item?.class_name}</MenuItem>)
-              }
-            </Select>
-          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
           <Button onClick={async ()=> {
             try {
-              const result= await add_student({firstName, lastName, dob, phone, middleName, account, password, class_id: classChoose})
+              const result= await add_teacher({firstName, lastName, dob, phone, middleName, account, password})
               if(result?.add=== true) {
-                swal("Notice", "Added student", "success")
+                swal("Notice", "Added teacher", "success")
                 .then(()=> props?.setChange(prev=> !prev))
                 .then(()=> {
                   setFirstName("")
@@ -133,7 +112,6 @@ export default function AddStudent(props) {
                   setPhone("")
                   setAccount("")
                   setPassword("")
-                  setClassChoose("")
                 })
               }
               else {
@@ -142,6 +120,7 @@ export default function AddStudent(props) {
               handleClose()
             }
             catch(e) {
+              console.log(e)
               swal("Notice", "Error server", "error")
             }
           }}>Create</Button>

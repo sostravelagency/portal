@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import axios from "axios";
+import update_teacher from "@/app/api/admin/update_teacher";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -19,6 +20,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function UpdateTeacher(props) {
   const [open, setOpen] = React.useState(false);
+  const [teacherId, setTeacherId]= React.useState(props?.id)
   const [firstName, setFirstName] = React.useState(props?.first_name);
   const [middleName, setMiddleName] = React.useState(props?.middle_name);
   const [lastName, setLastName] = React.useState(props?.last_name);
@@ -106,7 +108,23 @@ export default function UpdateTeacher(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Update</Button>
+          <Button onClick={async ()=> {
+            try {
+              const result= await update_teacher({firstName, lastName, middleName, phone, dob, teacher_id: teacherId})
+              if(result?.update=== true) {
+                swal("Notice", "Updated teacher", "success")
+                .then(()=> props?.setChange(prev=> !prev))
+              }
+              else {
+                  swal("Notice", "Error unknown", "error")
+                }
+              handleClose()
+            }
+            catch(error) {
+              swal("Notice", "Error server", "error")
+
+            }
+          }}>Update</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -12,10 +12,11 @@ import {
 }
 from 'mdb-react-ui-kit';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-import Header from '@/component/Header';
+// import Header from '@/component/Header';
 import { useRouter } from 'next/router';
 import login from '@/app/api/login';
 import swal from 'sweetalert';
+import Header from '@/app/component/Header';
 
 function Login() {
   const router= useRouter()

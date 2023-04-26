@@ -1,7 +1,7 @@
+import { v4 } from "uuid";
 import connection from "../../connect";
 
 const handler = async (req, res) => {
-  console.log(req.query);
   if (req.method === "GET") {
     try {
       const [rows] = await connection.execute(
@@ -12,8 +12,31 @@ const handler = async (req, res) => {
       return res.status(500).json(error);
     }
   } else if (req.method === "POST") {
-    return res.status(200).json({ message: "Post method" });
-  } else if (req.method === "DELETE") {
+    try {
+      // console.log(req.body)
+      const {firstName, lastName, class_id, dob, phone, account, password, middleName}= req.body
+      const account_id= v4()
+      const [rows]= await connection.execute("INSERT INTO student(first_name, middle_name, last_name, class_id, dob, phone, account_id) VALUES(?, ?, ?, ?, ?, ?, ?)", [firstName || "", lastName || "", middleName || "", class_id || "", dob || "", phone || "", account_id || ""])
+      const [rows1]= await connection.execute("INSERT INTO account(account_id, account, password, role) VALUES(?, ?, ?, ?)", [account_id || "", account || "", password || "", 1])
+      return res.status(200).json({ message: "add success", add :true});
+
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json(error)
+    }
+  } 
+  else if(req.method=== "PATCH") {
+    try {
+      const {firstName, lastName, class_id, dob, phone, account, password, middleName, student_id}= req.body
+  
+      const [rows] =await connection.execute("UPDATE student SET first_name= ?, last_name= ?, dob= ?, middle_name= ?, phone= ?, class_id= ? WHERE student_id= ?", [firstName, lastName, dob, middleName, phone, class_id, student_id])
+      return res.status(200).json({update: true})
+      
+    } catch (error) {
+      return res.status(500).json({update: false, error})
+    }
+  }
+  else if (req.method === "DELETE") {
     try {
       await connection.execute("DELETE FROM student WHERE student_id = ?", [
         req.body.student_id || "",

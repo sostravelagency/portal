@@ -36,6 +36,10 @@ function Login() {
               </div>
 
               <MDBBtn className='mb-4' size='lg'>Login</MDBBtn>
+              <div className="">You{"'"}re teacher?</div>
+              <br />
+              <MDBBtn className='mb-4' size='lg'>Login with teacher</MDBBtn>
+
 
             </MDBCol>
 

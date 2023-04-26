@@ -6,6 +6,8 @@ import Admin from '..';
 import UpdateStudent from './Component/UpdateStudent';
 import { DeleteOutlined } from '@ant-design/icons';
 import swal from 'sweetalert';
+import { Button } from '@mui/material';
+import AddStudent from './Component/AddStudent';
 const AdminManageStudents= ()=> {
     return (
         <Admin>
@@ -71,7 +73,7 @@ function StudentData() {
             renderCell: (params)=> {
                 return (
                     <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: 10}}>
-                        <UpdateStudent {...params.row} />
+                        <UpdateStudent {...params.row} setChange={setChange} />
                         <DeleteOutlined onClick={async ()=> {
                             swal("Notice", "Are you sure want to delete this student", {buttons: {
                                 ok: "Confirm",
@@ -120,6 +122,10 @@ function StudentData() {
 
     return (
       <Box sx={{ height: 400, width: '100%' }}>
+        <AddStudent setChange={setChange} />
+        <div></div>
+        <br />
+        <div></div>
         <DataGrid
           rows={data}
           columns={columns}

@@ -11,14 +11,21 @@ const apiCourse = async (req, res) => {
       return res.status(500).json(error);
     }
   } else if (req.method === "POST") {
-    return res.status(200).json({ message: "Post method" });
-  } else if (req.method === "DELETE") {
-    const { student_id } = JSON.parse(req.body);
     try {
-      await connection.execute("DELETE FROM course WHERE course_id = ?", [
-        student_id,
-      ]);
-      return res.status(200).json({ delete: true });
+      // console.log(req.body)
+      const {courseName, courseDescription, courseLesson}= req.body
+      // const account_id= v4()
+      const [rows]= await connection.execute("INSERT INTO course(course_name, course_description, lesson_number) VALUES(?, ?, ?)", [courseName || "", courseDescription || "", courseLesson || ""])
+      return res.status(200).json({ message: "add success", add :true});
+      
+    } catch (error) {
+      return res.status(500).json(error)
+    }
+  } else if (req.method === "PATCH") {
+    const { courseName, courseDescription, courseLesson, courseId } = req.body;
+    try {
+      await connection.execute("UPDATE course SET course_name= ?, course_description= ?, lesson_number= ? WHERE course_id= ?", [courseName, courseDescription, courseLesson, courseId]);
+      return res.status(200).json({ update: true });
     } catch (error) {
       return res.status(500).json(error);
     }

@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
+// import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import get_list_class from "@/app/api/get_list_class";
@@ -15,28 +15,18 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import add_student from "@/app/api/admin/add_student";
 import swal from "sweetalert";
+import add_course from "@/app/api/admin/add_course";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AddStudent(props) {
+export default function AddCourse(props) {
   const [open, setOpen] = React.useState(false);
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [middleName, setMiddleName] = React.useState("");
-  const [dob, setDob] = React.useState("");
-  const [phone, setPhone]= React.useState("")
-  const [account, setAccount]= React.useState("")
-  const [password, setPassword]= React.useState("")
-  const [classChoose, setClassChoose]= React.useState()
-  const [listClass, setListClass] = React.useState([]);
-  React.useEffect(() => {
-    (async () => {
-      const result = await get_list_class();
-      return setListClass(result);
-    })();
-  }, []);
+  const [courseName, setCourseName]= React.useState("")
+  const [courseDescription, setCourseDescription]= React.useState("")
+  const [courseLesson, setCourseLesson]= React.useState("")
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -48,7 +38,7 @@ export default function AddStudent(props) {
   return (
     <div>
       <Button color={"primary"} variant="contained" onClick={handleClickOpen}>
-        Add student
+        Add course
       </Button>
       <Dialog
         open={open}
@@ -61,79 +51,35 @@ export default function AddStudent(props) {
         <DialogContent>
           <TextField
             style={{ margin: "12px 0", width: 535 }}
-            label={"First name"}
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            label={"Course name"}
+            value={courseName}
+            onChange={(e) => setCourseName(e.target.value)}
           />
           <TextField
             style={{ margin: "12px 0", width: 535 }}
-            label={"Middle name"}
-            value={middleName}
-            onChange={(e) => setMiddleName(e.target.value)}
+            label={"Course description"}
+            value={courseDescription}
+            onChange={(e) => setCourseDescription(e.target.value)}
           />
           <TextField
             style={{ margin: "12px 0", width: 535 }}
-            label={"Last name"}
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            label={"Course lesson number"}
+            value={courseLesson}
+            onChange={(e) => setCourseLesson(e.target.value)}
           />
-          <TextField
-            style={{ margin: "12px 0", width: 535 }}
-            label={"Phone"}
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <TextField
-            style={{ margin: "12px 0", width: 535 }}
-            label={"DOB"}
-            value={dob}
-            onChange={(e) => setDob(e.target.value)}
-          />
-          <TextField
-            style={{ margin: "12px 0", width: 535 }}
-            label={"Account"}
-            value={account}
-            onChange={(e) => setAccount(e.target.value)}
-          />
-          <TextField
-            style={{ margin: "12px 0", width: 535 }}
-            type="password"
-            label={"Password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Class</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={classChoose || ""}
-              label="Class"
-              onChange={(e)=> setClassChoose(e.target.value)}
-            >
-              {
-                listClass?.map((item, key)=> <MenuItem key={key} value={item?.class_id}>{item?.class_name}</MenuItem>)
-              }
-            </Select>
-          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
           <Button onClick={async ()=> {
             try {
-              const result= await add_student({firstName, lastName, dob, phone, middleName, account, password, class_id: classChoose})
+              const result= await add_course({courseName, courseDescription, courseLesson})
               if(result?.add=== true) {
-                swal("Notice", "Added student", "success")
+                swal("Notice", "Added course", "success")
                 .then(()=> props?.setChange(prev=> !prev))
                 .then(()=> {
-                  setFirstName("")
-                  setLastName("")
-                  setMiddleName("")
-                  setDob("")
-                  setPhone("")
-                  setAccount("")
-                  setPassword("")
-                  setClassChoose("")
+                  setCourseName("")
+                  setCourseDescription("")
+                  setCourseLesson("")
                 })
               }
               else {

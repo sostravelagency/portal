@@ -7,6 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TextField } from "@mui/material";
+import update_course from "@/app/api/admin/update_course";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -14,8 +15,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function UpdateCourse(props) {
   const [open, setOpen] = React.useState(false);
+  const [courseId, setCourseId]= React.useState(props?.id)
   const [courseName, setCourseName] = React.useState(props?.course_name);
-  const [courseDescription, setCourseDescription] = React.useState(props?.course_descripion);
+  const [courseDescription, setCourseDescription] = React.useState(props?.course_description);
   const [lessonNumber, setLessonNumber] = React.useState(props?.lesson_number);
  
   const handleClickOpen = () => {
@@ -72,7 +74,24 @@ export default function UpdateCourse(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Update</Button>
+          <Button onClick={async ()=> {
+            try {
+              const result= await update_course({courseName, courseDescription, courseLesson: lessonNumber, courseId})
+              if(result?.update=== true) {
+                  swal("Notice", "Updated student", "success")
+                  .then(()=> props?.setChange(prev=> !prev))
+                }
+                else {
+                    swal("Notice", "Error unknown", "error")
+                  }
+                handleClose()
+            }
+            catch(error) {
+              console.log(error)
+              swal("Notice", "Error server", "error")
+
+            }
+          }}>Update</Button>
         </DialogActions>
       </Dialog>
     </div>

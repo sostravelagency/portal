@@ -5,6 +5,8 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import axios from "axios";
 import UpdateTeacher from "./Component/UpdateTeacher";
 import { DeleteOutlined } from "@ant-design/icons";
+import AddTeacher from "./Component/AddTeacher";
+import delete_teacher from "@/app/api/admin/delete_teacher";
 const AdminManageStudents= ()=> {
     return (
         <Admin>
@@ -15,89 +17,11 @@ const AdminManageStudents= ()=> {
     )
 }   
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-      field: 'first_name',
-      headerName: 'First name',
-      width: 150,
-      editable: true,
-    },
-    {
-        field: 'middle_name',
-        headerName: 'Middle name',
-        width: 150,
-        editable: true,
-      },
-    {
-      field: 'last_name',
-      headerName: 'Last name',
-      width: 150,
-      editable: true,
-    },
-    {
-        field: 'dob',
-        headerName: 'DOB',
-        width: 150,
-        editable: true,
-      },
-      {
-        field: 'phone',
-        headerName: 'Phone',
-        width: 150,
-        editable: true,
-      },
-    {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (params) =>
-        `${params.row.first_name || ''} ${params.row.middle_name || ''} ${params.row.last_name || ''}`,
-    },
-    {
-        headerName: 'Action',
-        width: 200,
-        editable: true,
-        renderCell: (params)=> {
-            return (
-                <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: 10}}>
-                    <UpdateTeacher {...params.row} />
-                    <DeleteOutlined onClick={async ()=> {
-                        swal("Notice", "Are you sure want to delete this teacher", {buttons: {
-                            ok: "Confirm",
-                            cancel: "Cancel"
-                        }})
-                        .then(async value=> {
-                            if(value=== "ok") {
-                                const res= await fetch('/api/v3/teacher',{
-                                    method: "delete",
-                                    body: JSON.stringify({student_id: params.row.id}),
-                                })
-                                const result= await res.json()
-                                if(result?.delete=== true) {
-                                    swal("Notice", "Delete teacher successfully", "success")
-                                    .then(()=> setChange(prev=> !prev))
-                                }
-                                else {
-                                    swal("Notice", "Error unexpected", "error")
-                                }
-                            }
-                            else {
-                                return null
-                            }
-                        })
-                        .catch(()=> swal("Notice", "Error unexpected", "error"))
-                    }} style={{cursor: "pointer"}} title={"Delete teacher"}  />
-                </div>
-            )
-        }
-      }
-  ];
+
   
 function StudentData() {
     const [data, setData]= React.useState([])
+    const [change, setChange]= React.useState(false)
     React.useEffect(()=> {
         (async ()=> {
         const res= await axios({
@@ -107,9 +31,89 @@ function StudentData() {
         const result= await res.data
         return setData(result)
         })()
-    }, [])
+    }, [change])
+    const columns = [
+      { field: 'id', headerName: 'ID', width: 90 },
+      {
+        field: 'first_name',
+        headerName: 'First name',
+        width: 150,
+        editable: true,
+      },
+      {
+          field: 'middle_name',
+          headerName: 'Middle name',
+          width: 150,
+          editable: true,
+        },
+      {
+        field: 'last_name',
+        headerName: 'Last name',
+        width: 150,
+        editable: true,
+      },
+      {
+          field: 'dob',
+          headerName: 'DOB',
+          width: 150,
+          editable: true,
+        },
+        {
+          field: 'phone',
+          headerName: 'Phone',
+          width: 150,
+          editable: true,
+        },
+      {
+        field: 'fullName',
+        headerName: 'Full name',
+        description: 'This column has a value getter and is not sortable.',
+        sortable: false,
+        width: 160,
+        valueGetter: (params) =>
+          `${params.row.first_name || ''} ${params.row.middle_name || ''} ${params.row.last_name || ''}`,
+      },
+      {
+          headerName: 'Action',
+          width: 200,
+          editable: true,
+          renderCell: (params)=> {
+              return (
+                  <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: 10}}>
+                      <UpdateTeacher {...params.row} setChange={setChange} />
+                      <DeleteOutlined onClick={async ()=> {
+                          swal("Notice", "Are you sure want to delete this teacher", {buttons: {
+                              ok: "Confirm",
+                              cancel: "Cancel"
+                          }})
+                          .then(async value=> {
+                              if(value=== "ok") {
+                                const result= await delete_teacher(params.row?.id)
+                                  if(result?.delete=== true) {
+                                      swal("Notice", "Delete teacher successfully", "success")
+                                      .then(()=> setChange(prev=> !prev))
+                                  }
+                                  else {
+                                      swal("Notice", "Error unexpected", "error")
+                                  }
+                              }
+                              else {
+                                  return null
+                              }
+                          })
+                          .catch(()=> swal("Notice", "Error unexpected", "error"))
+                      }} style={{cursor: "pointer"}} title={"Delete teacher"}  />
+                  </div>
+              )
+          }
+        }
+    ];
     return (
       <Box sx={{ height: 400, width: '100%' }}>
+        <AddTeacher setChange={setChange} />
+        <div></div>
+        <br />
+        <div></div>
         <DataGrid
           rows={data}
           columns={columns}
