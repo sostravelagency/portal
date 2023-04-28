@@ -16,7 +16,7 @@ const apiTeacher = async (req, res) => {
       // console.log(req.body)
       const {firstName, lastName, dob, phone, account, password, middleName}= req.body
       const account_id= v4()
-      const [rows]= await connection.execute("INSERT INTO teacher(first_name, middle_name, last_name, dob, phone) VALUES(?, ?, ?, ?, ?)", [firstName || "", lastName || "", middleName || "", dob || "", phone || ""])
+      const [rows]= await connection.execute("INSERT INTO teacher(first_name, middle_name, last_name, dob, phone, account_id) VALUES(?, ?, ?, ?, ?, ?)", [firstName || "", lastName || "", middleName || "", dob || "", phone || "", account_id || ""])
       const [rows1]= await connection.execute("INSERT INTO account(account_id, account, password, role) VALUES(?, ?, ?, ?)", [account_id || "", account || "", password || "", 2])
       return res.status(200).json({ message: "add success", add :true});
       

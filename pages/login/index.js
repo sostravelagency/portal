@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MDBBtn,
   MDBContainer,
@@ -13,8 +13,16 @@ import {
 from 'mdb-react-ui-kit';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import Header from '@/component/Header';
+import login from '@/app/api/login';
+import Cookies from 'js-cookie';
+import swal from 'sweetalert';
+import { useRouter } from 'next/router';
 
 function Login() {
+  const router= useRouter()
+  const [account, setAccount]= useState("")
+  const [password, setPassword]= useState("")
+
   return (
     <MDBContainer fluid>
       <Header />
@@ -27,18 +35,40 @@ function Login() {
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="envelope me-3" size='lg'/>
-                <MDBInput label='Your Account' id='form2' type='text'/>
+                <MDBInput value={account} onChange={(e)=> setAccount(e.target.value)} label='Your Account' id='form2' type='text'/>
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="lock me-3" size='lg'/>
-                <MDBInput label='Password' id='form3' type='password'/>
+                <MDBInput value={password} onChange={(e)=> setPassword(e.target.value)} label='Password' id='form3' type='password'/>
               </div>
 
-              <MDBBtn className='mb-4' size='lg'>Login</MDBBtn>
+              <MDBBtn onClick={async ()=> {
+                try {
+                  const result= await login(account, password)
+                  if(result?.exist=== true) {
+                    if(result?.role=== 1) {
+                      swal("Notice", "Login is succsessfully", "success")
+                      .then(()=> {
+                        Cookies.set("uid", result?.uid)
+                        Cookies.set("role", result?.role)
+                      })
+                      .then(()=> window.location.href= window.location.origin+ "/student")
+                    }
+                  }
+                  else {
+                    swal("Notice", "Account is not exist", "error")
+                  }
+                } 
+                catch(error) {  
+                  swal("Notice", "Error unknown", "error")
+                }
+              }} className='mb-4' size='lg'>Login</MDBBtn>
               <div className="">You{"'"}re teacher?</div>
               <br />
-              <MDBBtn className='mb-4' size='lg'>Login with teacher</MDBBtn>
+              <MDBBtn onClick={()=> {
+                router.push("/login/teacher")
+              }} className='mb-4' size='lg'>Login with teacher</MDBBtn>
 
 
             </MDBCol>
